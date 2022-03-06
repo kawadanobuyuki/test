@@ -18,5 +18,5 @@ Route::get('/', function () {
 });
 //mess
 Route::get('/index', function () {
-    return view('index');
+    return view('welcome');
 });
