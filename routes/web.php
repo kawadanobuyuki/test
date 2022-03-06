@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-//aa２２
+//aa２２33
 Route::get('/index', function () {
     return view('index');
 });
