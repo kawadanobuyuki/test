@@ -6,15 +6,26 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use App\Services\testService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
-class Controller extends BaseController
+class testController extends BaseController
 {
-	public function __construct()
+	private $service;
+	public function __construct(testService $service)
 	{
-
+		$this->service = $service;
 	}
-	public function index()
+	public function index(Request $request)
 	{
-		echo phpinfo();
+		//$request->session()->put('name', 'aaaaaa');
+		$data = $request->session()->get('name');
+		print_r($data);
+
+		Cache::store('redis')->put('age', 45, 1800);
+		print_r(Cache::store('redis')->get('age'));
+
+		echo $this->service->execute();
 	}
 }
