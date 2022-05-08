@@ -15,7 +15,7 @@ class testController extends BaseController
 	private $service;
 	public function __construct(testService $service)
 	{
-		// コミット
+		// コミット(修正)
 		$this->service = $service;
 	}
 	public function index(Request $request)
