@@ -29,7 +29,4 @@ class testController extends BaseController
 
 		echo $this->service->execute();
 	}
-	public function index2(Request $request)
-	{
-	}
 }
