@@ -29,4 +29,7 @@ class testController extends BaseController
 
 		echo $this->service->execute();
 	}
+	public function index3(Request $request)
+	{
+	}
 }
