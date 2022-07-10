@@ -15,7 +15,7 @@ class testController extends BaseController
 	private $service;
 	public function __construct(testService $service)
 	{
-		// コミット(修正)aaaa
+		// コミット(修正)aaaabbbbb
 		$this->service = $service;
 	}
 	public function index(Request $request)
@@ -28,5 +28,14 @@ class testController extends BaseController
 		print_r(Cache::store('redis')->get('age'));
 
 		echo $this->service->execute();
+	}
+	/**
+	 * index3
+	 *
+	 * @param Request $request 
+	 * @return void
+	 */
+	public function index3(Request $request)
+	{
 	}
 }
