@@ -21,7 +21,7 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          ssh -i private_key ${SERVER_USERNAME}@${SERVER_HOST} -o StrictHostKeyChecking=no "cd /var/www/test/test && \
+          ssh -i private_key ${SERVER_USERNAME}@${SSH_HOST} -o StrictHostKeyChecking=no "cd /var/www/test/test && \
           git pull origin master && \
 	        cd /var/www/test/test && \
           #composer install”
