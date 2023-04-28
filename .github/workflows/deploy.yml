@@ -1,24 +1,27 @@
-name: CI
+name: production_deploy
 
 on:
   push:
-    branches:
-      - develop
+    branches: [ deploy ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v3
-      - name: Deploy
-        uses: actions/setup-node@v3
-        with:
-          node-version: "14"
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          port: ${{ secrets.SSH_PORT }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ${{ secrets.SERVER_DEPLOY_DIR }}
-            git pull origin develop
+
+      - name: deploy
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY}}
+          SSH_PORT: ${{ secrets.SSH_PORT}}
+          SSH_HOST: ${{ secrets.SERVER_HOST}}
+          SSH_USERNAME: ${{ secrets.SERVER_USERNAME}}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private_key
+          chmod 600 private_key
+          ssh -i private_key ${SERVER_USERNAME}@${SERVER_HOST} -o StrictHostKeyChecking=no "cd /var/www/test/test && \
+          git pull origin master && \
+	        cd www/laravel && \
+          composer install”
