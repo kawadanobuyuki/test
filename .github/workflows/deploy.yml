@@ -1,27 +1,25 @@
-name: production_deploy
+name: CI
 
 on:
   push:
-    branches: [ deploy ]
+    branches:
+      - develop
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: deploy
-        env:
-          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
-          SSH_PORT: ${{secrets.SSH_PORT}}
-          SSH_HOST: ${{secrets.SERVER_HOST}}
-          SSH_USERNAME: ${{secrets.SERVER_USERNAME}}
-        run: |
-          echo "$SSH_PRIVATE_KEY" > private_key
-          chmod 600 private_key
-          ssh -i private_key ${SSH_USERNAME}@${SSH_HOST} -o StrictHostKeyChecking=no "cd /var/www/test/test && \
-          git pull origin master && \
-	        cd /var/www/test/test && \
-          #composer install”
+      - name: Deploy
+        #uses: actions/setup-node@v3
+        uses: appleboy/ssh-action@master
+        with:
+          #node-version: "14"
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.SERVER_DEPLOY_DIR }}
+            git pull origin develop
