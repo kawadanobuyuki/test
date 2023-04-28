@@ -19,7 +19,7 @@ jobs:
           SSH_HOST: ${{ secrets.SERVER_HOST}}
           SSH_USERNAME: ${{ secrets.SERVER_USERNAME}}
         run: |
-          echo "$SSH_PRIVATE_KEY" > private_key
+          echo ${SSH_PRIVATE_KEY} > private_key
           chmod 600 private_key
           ssh -i private_key ${SSH_USERNAME}@${SSH_HOST} -o StrictHostKeyChecking=no "cd /var/www/test/test && \
           git pull origin develop
