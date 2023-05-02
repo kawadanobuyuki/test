@@ -1,9 +1,61 @@
 version: "3"
 services:
-  master:
-    container_name: master
-    image: jenkins/jenkins:latest
-    ports:
-      - 8080:8080
-    volumes:
-      - ./jenkins_home:/var/jenkins_home
+    nginx:
+        container_name: local_web
+        build: ./nginx
+        tty: true
+        ports:
+            - "80:80"
+        volumes:
+            - ./laravel:/var/www/html/laravel
+        links:
+            - mysql:mysql
+        cap_add:
+            - SYS_ADMIN
+        security_opt:
+            - seccomp:unconfined
+        depends_on:
+            - php-fpm
+    php-fpm:
+        container_name: local_php_fpm
+        build: ./php
+        volumes:
+            - ./laravel:/var/www/html/laravel
+    mysql:
+        container_name: local_db
+        build: ./mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=test_db
+            - MYSQL_USER=test
+            - MYSQL_PASSWORD=test
+            - TZ='Asia/Tokyo'
+        volumes:
+            - ./mysql/conf.d:/etc/mysql/conf.d
+            - ./mysql/mysql_data:/var/lib/mysql
+            - ./mysql/init:/docker-entrypoint-initdb.d
+        ports:
+            - 3306:3306
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: local_phpmyadmin
+        environment:
+            - PMA_ARBITRARY=1
+            - PMA_HOST=mysql
+            - PMA_USER=test
+            - PMA_PASSWORD=test
+            - MEMORY_LIMIT=128M
+            - UPLOAD_LIMIT=400M
+        links:
+            - mysql
+        ports:
+            - 1234:80
+        volumes:
+            - /sessions
+    master:
+        container_name: master
+        image: jenkins/jenkins:latest
+        ports:
+            - 8080:8080
+        volumes:
+            - ./jenkins_home:/var/jenkins_home
